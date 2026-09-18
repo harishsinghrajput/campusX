@@ -152,25 +152,81 @@ JSON structure:
         }
     }
 };
-// Pre-loaded Resources Data
+// 10 Pre-loaded B.Tech Academic Resources
 const preLoadedResources = [
     {
         title: "Compiler Design Lexical Analyzer Guide",
         category: "CSE - Sem 7",
-        desc: "Complete implementation guide for C-based lexer, tokens, and DFA transition tables.",
+        desc: "Complete guide on Lexical Analysis, C-based tokenizers, Lex specifications, and DFA states.",
         link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
         uploadedBy: "Faculty / Pre-loaded"
     },
     {
         title: "Data Structures & Algorithms Vault",
-        category: "CSE Core",
-        desc: "Comprehensive hand-written reference notes on Trees, Graphs, and Dynamic Programming.",
+        category: "CSE - Sem 3",
+        desc: "Comprehensive reference notes on Trees, Graphs, Dynamic Programming, Heap, and Sorting.",
+        link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        uploadedBy: "Faculty / Pre-loaded"
+    },
+    {
+        title: "Operating Systems Core Concepts",
+        category: "CSE - Sem 4",
+        desc: "Detailed breakdown of Process Scheduling, Memory Management, Deadlocks, and Page Replacement.",
+        link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        uploadedBy: "Faculty / Pre-loaded"
+    },
+    {
+        title: "Database Management Systems (DBMS) & SQL",
+        category: "CSE - Sem 4",
+        desc: "Notes on ER Diagrams, Relational Algebra, Normalization (1NF to BCNF), and Complex SQL Queries.",
+        link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        uploadedBy: "Faculty / Pre-loaded"
+    },
+    {
+        title: "Computer Networks & Protocols",
+        category: "CSE - Sem 5",
+        desc: "OSI vs TCP/IP models, Subnetting calculations, IP Addressing, Routing Algorithms, and Socket Programming.",
+        link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        uploadedBy: "Faculty / Pre-loaded"
+    },
+    {
+        title: "Artificial Intelligence & Neural Networks",
+        category: "CSE - Sem 7",
+        desc: "Introduction to Search Algorithms (A*, Minimax), Machine Learning basics, and Multi-Layer Perceptrons.",
+        link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        uploadedBy: "Faculty / Pre-loaded"
+    },
+    {
+        title: "Object-Oriented Programming with Java",
+        category: "CSE - Sem 3",
+        desc: "Concepts of Inheritance, Polymorphism, Exception Handling, Collections Framework, and Multithreading.",
+        link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        uploadedBy: "Faculty / Pre-loaded"
+    },
+    {
+        title: "Software Engineering & Agile Lifecycle",
+        category: "CSE - Sem 6",
+        desc: "SDLC Models, Agile/Scrum Framework, SRS Documentation, Testing Strategies, and UML Diagrams.",
+        link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        uploadedBy: "Faculty / Pre-loaded"
+    },
+    {
+        title: "Computer Graphics & Pipeline Algorithms",
+        category: "CSE - Sem 5",
+        desc: "Bresenham's Line Algorithm, DDA, 2D/3D Transformations, Clipping (Sutherland-Hodgman), and Projection.",
+        link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        uploadedBy: "Faculty / Pre-loaded"
+    },
+    {
+        title: "Theory of Computation (TOC) & Automata",
+        category: "CSE - Sem 5",
+        desc: "DFA, NFA, Regular Expressions, Context-Free Grammars (CFG), Pushdown Automata, and Turing Machines.",
         link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
         uploadedBy: "Faculty / Pre-loaded"
     }
 ];
 
-// Load and Render Resources
+// Load and Render Resources Engine
 window.loadResources = function() {
     const resourceGrid = document.getElementById('resourceGrid');
     if (!resourceGrid) return;
@@ -198,7 +254,7 @@ window.loadResources = function() {
     `).join('');
 };
 
-// Handle New Uploads
+// Handle New Student Uploads
 window.handleResourceUpload = function(event) {
     event.preventDefault();
     
