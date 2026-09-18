@@ -1,6 +1,8 @@
+// Mermaid initialization
 mermaid.initialize({ startOnLoad: false, theme: 'dark' });
 
-function getApiKey() {
+// Function to handle API Key input and storage
+window.getApiKey = function() {
     let key = localStorage.getItem('GEMINI_KEY');
     if (!key || key === "null" || key.trim() === "") {
         key = prompt("Please enter your Google Gemini API Key:");
@@ -9,13 +11,15 @@ function getApiKey() {
         }
     }
     return key;
-}
+};
 
-function resetApiKey() {
+// Function to reset API Key from Sidebar button
+window.resetApiKey = function() {
     localStorage.removeItem('GEMINI_KEY');
-    alert("API Key reset! Next search will ask for a new key.");
-}
+    alert("API Key reset successfully! Enter your new key on the next search.");
+};
 
+// Retry Mechanism for Gemini API (503 handling)
 async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
     for (let i = 0; i < retries; i++) {
         const response = await fetch(url, options);
@@ -25,7 +29,8 @@ async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
     return fetch(url, options);
 }
 
-async function searchTopic() {
+// MAIN SEARCH FUNCTION
+window.searchTopic = async function() {
     const inputElement = document.getElementById('topicInput');
     const topic = inputElement ? inputElement.value.trim() : '';
 
@@ -34,9 +39,9 @@ async function searchTopic() {
         return;
     }
 
-    const GEMINI_API_KEY = getApiKey();
+    const GEMINI_API_KEY = window.getApiKey();
     if (!GEMINI_API_KEY) {
-        alert("API Key is required!");
+        alert("API Key is required to fetch content!");
         return;
     }
 
@@ -44,29 +49,36 @@ async function searchTopic() {
     const flowchartContainer = document.getElementById('flowchartContainer');
     const youtubeContainer = document.getElementById('youtubeContainer');
 
-    notesContainer.innerHTML = `
-        <div class="text-center py-4">
-            <div class="spinner-border text-info" role="status"></div>
-            <p class="mt-2 text-white-50">Fetching AI study notes for "${topic}"...</p>
-        </div>`;
+    // UI Loading States
+    if (notesContainer) {
+        notesContainer.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-info" role="status"></div>
+                <p class="mt-2 text-white-50">Fetching AI notes for "${topic}"...</p>
+            </div>`;
+    }
         
-    flowchartContainer.innerHTML = `
-        <div class="text-center py-4">
-            <div class="spinner-border text-success" role="status"></div>
-            <p class="mt-2 text-white-50">Generating concept map...</p>
-        </div>`;
+    if (flowchartContainer) {
+        flowchartContainer.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-success" role="status"></div>
+                <p class="mt-2 text-white-50">Generating concept map...</p>
+            </div>`;
+    }
 
-    youtubeContainer.innerHTML = `
-        <div class="col-12 text-center py-3">
-            <div class="spinner-border text-danger spinner-border-sm" role="status"></div>
-            <span class="ms-2 text-white-50">Finding video lectures...</span>
-        </div>`;
+    if (youtubeContainer) {
+        youtubeContainer.innerHTML = `
+            <div class="col-12 text-center py-3">
+                <div class="spinner-border text-danger spinner-border-sm" role="status"></div>
+                <span class="ms-2 text-white-50">Finding recommended lectures...</span>
+            </div>`;
+    }
 
     const promptText = `Return ONLY valid JSON with no markdown block or extra text. Topic: "${topic}".
 JSON structure:
 {
-  "notes": "<ul><li><strong>Overview:</strong> Key overview of ${topic}</li><li><strong>Key Concepts:</strong> Core details</li><li><strong>Summary:</strong> Final takeaways</li></ul>",
-  "flowchart": "graph TD\\nA[${topic}] --> B[Core Pillar 1]\\nA --> C[Core Pillar 2]\\nB --> D[Subtopic Details]"
+  "notes": "<ul><li><strong>Overview:</strong> Comprehensive introduction to ${topic}</li><li><strong>Core Pillars:</strong> Key architecture and working details</li><li><strong>Summary:</strong> Quick examination takeaways</li></ul>",
+  "flowchart": "graph TD\\nA[${topic}] --> B[Core Pillar 1]\\nA --> C[Core Pillar 2]\\nB --> D[Details & Examples]"
 }`;
 
     try {
@@ -88,41 +100,55 @@ JSON structure:
         rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
         const parsedData = JSON.parse(rawText);
 
-        notesContainer.innerHTML = `
-            <h6 class="text-primary fw-bold">Topic: ${topic}</h6>
-            <div class="mt-3 text-light">${parsedData.notes}</div>
-        `;
+        // Render Notes
+        if (notesContainer) {
+            notesContainer.innerHTML = `
+                <h6 class="text-info fw-bold">Topic: ${topic}</h6>
+                <div class="mt-3 text-light">${parsedData.notes}</div>
+            `;
+        }
 
-        flowchartContainer.innerHTML = `<div class="mermaid">${parsedData.flowchart}</div>`;
-        mermaid.run();
+        // Render Mermaid Diagram
+        if (flowchartContainer) {
+            flowchartContainer.innerHTML = `<div class="mermaid">${parsedData.flowchart}</div>`;
+            mermaid.run();
+        }
 
-        // Populate YouTube Suggestions
-        const ytQuery = encodeURIComponent(`${topic} tutorial lecture`);
-        youtubeContainer.innerHTML = `
-            <div class="col-md-6">
-                <div class="p-3 bg-secondary bg-opacity-25 rounded border border-secondary d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="mb-1 text-white"><i class="fa-brands fa-youtube text-danger me-2"></i>${topic} - Full Concept Lecture</h6>
-                        <small class="text-white-50">YouTube Search Result</small>
+        // Render YouTube Video Recommendations
+        if (youtubeContainer) {
+            const ytQuery = encodeURIComponent(`${topic} tutorial lecture`);
+            youtubeContainer.innerHTML = `
+                <div class="col-md-6">
+                    <div class="p-3 bg-secondary bg-opacity-25 rounded border border-secondary d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="mb-1 text-white"><i class="fa-brands fa-youtube text-danger me-2"></i>${topic} - Full Concept Lecture</h6>
+                            <small class="text-white-50">YouTube Search Result</small>
+                        </div>
+                        <a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank" class="btn btn-sm btn-danger"><i class="fa-solid fa-play me-1"></i> Watch</a>
                     </div>
-                    <a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank" class="btn btn-sm btn-danger"><i class="fa-solid fa-play me-1"></i> Watch</a>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="p-3 bg-secondary bg-opacity-25 rounded border border-secondary d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="mb-1 text-white"><i class="fa-brands fa-youtube text-danger me-2"></i>${topic} - Quick Revision</h6>
-                        <small class="text-white-50">YouTube Search Result</small>
+                <div class="col-md-6">
+                    <div class="p-3 bg-secondary bg-opacity-25 rounded border border-secondary d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="mb-1 text-white"><i class="fa-brands fa-youtube text-danger me-2"></i>${topic} - Crash Course</h6>
+                            <small class="text-white-50">YouTube Search Result</small>
+                        </div>
+                        <a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank" class="btn btn-sm btn-danger"><i class="fa-solid fa-play me-1"></i> Watch</a>
                     </div>
-                    <a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank" class="btn btn-sm btn-danger"><i class="fa-solid fa-play me-1"></i> Watch</a>
                 </div>
-            </div>
-        `;
+            `;
+        }
 
     } catch (error) {
         console.error("API Error:", error);
-        notesContainer.innerHTML = `<p class="text-danger">Failed to fetch notes. <button onclick="resetApiKey()" class="btn btn-sm btn-outline-light ms-2">Reset API Key</button></p>`;
-        flowchartContainer.innerHTML = `<p class="text-danger">Diagram render error.</p>`;
-        youtubeContainer.innerHTML = `<p class="text-white-50 text-center">Unable to load videos.</p>`;
+        if (notesContainer) {
+            notesContainer.innerHTML = `<p class="text-danger">Failed to fetch notes. Check your Gemini API Key or try resetting it. <button onclick="window.resetApiKey()" class="btn btn-sm btn-outline-light ms-2">Reset Key</button></p>`;
+        }
+        if (flowchartContainer) {
+            flowchartContainer.innerHTML = `<p class="text-danger">Diagram render error.</p>`;
+        }
+        if (youtubeContainer) {
+            youtubeContainer.innerHTML = `<p class="text-white-50 text-center">Unable to load video lectures.</p>`;
+        }
     }
-}
+};
