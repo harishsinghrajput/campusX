@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusX - Resources</title>
+    <title>CampusX - Resources Vault</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
 </head>
 <body>
 
@@ -21,31 +22,54 @@
     </div>
 
     <div class="main-content">
-        <h2 class="fw-bold mb-4">Academic Resources & PDF Vault 📂</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card p-3 bg-dark text-white border-secondary">
-                    <h5><i class="fa-solid fa-file-pdf text-danger me-2"></i>Data Structures Notes</h5>
-                    <p class="text-white-50 small mb-2">Complete handwritten notes covering Trees, Graphs, and Sorting Algorithms.</p>
-                    <button class="btn btn-sm btn-outline-primary" onclick="alert('Downloading Data Structures PDF...')"><i class="fa-solid fa-download me-1"></i> Download PDF</button>
-                </div>
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <h2 class="fw-bold mb-1">Academic Resources Vault 📂</h2>
+                <p class="text-white-50 mb-0">Pre-loaded academic materials & student shared resources.</p>
             </div>
-            <div class="col-md-4">
-                <div class="card p-3 bg-dark text-white border-secondary">
-                    <h5><i class="fa-solid fa-file-pdf text-danger me-2"></i>Operating System Guide</h5>
-                    <p class="text-white-50 small mb-2">Detailed explanation on Process Synchronization, Memory & Deadlocks.</p>
-                    <button class="btn btn-sm btn-outline-primary" onclick="alert('Downloading OS Guide PDF...')"><i class="fa-solid fa-download me-1"></i> Download PDF</button>
+            <!-- Upload Button -->
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                <i class="fa-solid fa-cloud-arrow-up me-2"></i>Upload Resource
+            </button>
+        </div>
+
+        <!-- Dynamic Grid where Pre-resources & User Uploads appear -->
+        <div class="row g-4" id="resourceGrid"></div>
+    </div>
+
+    <!-- Upload Resource Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title"><i class="fa-solid fa-file-circle-plus text-success me-2"></i>Upload Study Material</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card p-3 bg-dark text-white border-secondary">
-                    <h5><i class="fa-solid fa-file-code text-warning me-2"></i>DBMS SQL Cheatsheet</h5>
-                    <p class="text-white-50 small mb-2">Essential SQL Queries, Normalization rules, and ER Diagram guides.</p>
-                    <button class="btn btn-sm btn-outline-primary" onclick="alert('Downloading SQL Cheatsheet...')"><i class="fa-solid fa-download me-1"></i> Download PDF</button>
+                <div class="modal-body">
+                    <form id="resourceForm" onsubmit="handleResourceUpload(event)">
+                        <div class="mb-3">
+                            <label class="form-label">Resource Title</label>
+                            <input type="text" id="resTitle" class="form-control bg-secondary text-white border-0" required placeholder="e.g. Operating Systems Lab Manual">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Subject / Semester</label>
+                            <input type="text" id="resCategory" class="form-control bg-secondary text-white border-0" required placeholder="e.g. CSE - Sem 7">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea id="resDesc" class="form-control bg-secondary text-white border-0" rows="2" required placeholder="Brief overview of topic..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">PDF / Drive Link</label>
+                            <input type="url" id="resLink" class="form-control bg-secondary text-white border-0" required placeholder="https://drive.google.com/...">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Publish Resource</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

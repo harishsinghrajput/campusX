@@ -152,3 +152,85 @@ JSON structure:
         }
     }
 };
+// Pre-loaded Resources Data
+const preLoadedResources = [
+    {
+        title: "Compiler Design Lexical Analyzer Guide",
+        category: "CSE - Sem 7",
+        desc: "Complete implementation guide for C-based lexer, tokens, and DFA transition tables.",
+        link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        uploadedBy: "Faculty / Pre-loaded"
+    },
+    {
+        title: "Data Structures & Algorithms Vault",
+        category: "CSE Core",
+        desc: "Comprehensive hand-written reference notes on Trees, Graphs, and Dynamic Programming.",
+        link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        uploadedBy: "Faculty / Pre-loaded"
+    }
+];
+
+// Load and Render Resources
+window.loadResources = function() {
+    const resourceGrid = document.getElementById('resourceGrid');
+    if (!resourceGrid) return;
+
+    let userResources = JSON.parse(localStorage.getItem('CAMPUSX_RESOURCES')) || [];
+    let allResources = [...preLoadedResources, ...userResources];
+
+    resourceGrid.innerHTML = allResources.map((res, index) => `
+        <div class="col-md-4">
+            <div class="card p-3 bg-dark text-white border-secondary h-100 shadow-sm d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-primary">${res.category}</span>
+                        <small class="text-white-50"><i class="fa-solid fa-user me-1"></i>${res.uploadedBy}</small>
+                    </div>
+                    <h5 class="fw-bold mb-2"><i class="fa-solid fa-file-pdf text-danger me-2"></i>${res.title}</h5>
+                    <p class="text-white-50 small mb-3">${res.desc}</p>
+                </div>
+                <div class="pt-2 border-top border-secondary d-flex justify-content-between align-items-center">
+                    <a href="${res.link}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa-solid fa-arrow-up-right-from-square me-1"></i> View / Download</a>
+                    ${index >= preLoadedResources.length ? `<button onclick="deleteResource(${index - preLoadedResources.length})" class="btn btn-sm btn-outline-danger" title="Delete Upload"><i class="fa-solid fa-trash"></i></button>` : ''}
+                </div>
+            </div>
+        </div>
+    `).join('');
+};
+
+// Handle New Uploads
+window.handleResourceUpload = function(event) {
+    event.preventDefault();
+    
+    const newResource = {
+        title: document.getElementById('resTitle').value.trim(),
+        category: document.getElementById('resCategory').value.trim(),
+        desc: document.getElementById('resDesc').value.trim(),
+        link: document.getElementById('resLink').value.trim(),
+        uploadedBy: "Student User"
+    };
+
+    let userResources = JSON.parse(localStorage.getItem('CAMPUSX_RESOURCES')) || [];
+    userResources.unshift(newResource);
+    localStorage.setItem('CAMPUSX_RESOURCES', JSON.stringify(userResources));
+
+    document.getElementById('resourceForm').reset();
+    const modalEl = document.getElementById('uploadModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) modal.hide();
+
+    window.loadResources();
+    alert('Resource uploaded successfully!');
+};
+
+// Delete User Uploads
+window.deleteResource = function(userIndex) {
+    let userResources = JSON.parse(localStorage.getItem('CAMPUSX_RESOURCES')) || [];
+    userResources.splice(userIndex, 1);
+    localStorage.setItem('CAMPUSX_RESOURCES', JSON.stringify(userResources));
+    window.loadResources();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    window.loadResources();
+});
